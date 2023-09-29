@@ -8,29 +8,27 @@ const profileSchema = require('./dataSc')
 app.use(express.json());
 app.use(cors());
 mongoose.connect('mongodb+srv://durgesh:Thehobby@cluster0.cieshmm.mongodb.net/registrations?');
-app.post('/requests', async(req, res) => {
-    const Name = req.body.Name
-    const Email = req.body.Email   
-    const Contact = req.body.Contact
-    const Query = req.body.Query
 
-    const formData  =  new profileSchema(
-        {
-            name: Name,
-            email:Email,
-            contact:Contact,
-            query:Query
-           
-        }
-    )
-    try{
-     
+
+app.post('/requests', async (req, res) => {
+    const { name, email, contact, query } = req.body; // Destructure the data directly from req.body
+  
+    try {
+      const formData = new profileSchema({
+        name,
+        email,
+        contact,
+        query,
+      });
+  
       await formData.save();
-        res.send("inserted data..")
-    } catch(err){
-        console.log(err)
+      res.send("Inserted data.");
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
     }
   });
+
 
   app.get('/requestdata', async (req, res) => {
     try {
